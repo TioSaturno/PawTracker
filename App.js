@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Image source = {{ uri: "https://static.wikia.nocookie.net/omegia/images/4/49/TungTungTungSahur.jpg/revision/latest?cb=20250331233111&path-prefix=es" }}
+      <Image source = {{ uri: "" }}
         style = {{ width: 503, heigth: 758 }}
       />
       <StatusBar style="auto" />
@@ -16,7 +16,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },
