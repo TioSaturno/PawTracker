@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Image source = {{ uri: "https://static.wikia.nocookie.net/omegia/images/4/49/TungTungTungSahur.jpg/revision/latest?cb=20250331233111&path-prefix=es" }}
+        style = {{ width: 503, heigth: 758 }}
+      />
       <StatusBar style="auto" />
+      <Text>TUNG TUNG TUNG SAHUR</Text>
     </View>
   );
 }
@@ -13,7 +16,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'yellow',
     alignItems: 'center',
     justifyContent: 'center',
   },
