@@ -51,7 +51,7 @@ export default function App() {
           title: notificationData.title, 
           body: notificationData.body, 
           time: new Date().toLocaleString(),
-        }
+        },
         ...prev,
       ])
     })
