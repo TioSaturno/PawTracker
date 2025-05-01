@@ -37,7 +37,7 @@ export default function App() {
   const [fixedThreshold] = useState(-100)
   const [NotificationHistory, setNotificationHistory] = useState([])
 
-  useEffect() => {
+  useEffect(() => {
     registerForPushNotificationAsync().then((token) => setExpoPushToken(token))
     
     loadCustomThreshold()
@@ -65,5 +65,90 @@ export default function App() {
       Notifications.removeNotificationSubscripcion(notificationListerner)
     }
   }, [])
+
+  useEffect(() => {
+    if(deviceData.rssi !== 0){
+      checkThresholds()
+    }
+  }, [deviceData])
+
+  const loadCustomThreshold = async () => {
+    try {
+      const value = await AsyncStorage.getItem("customThreshold")
+      if (value !== null){
+        setCustomThreshold(Number.parseInt(value))
+      }
+    } catch (error){
+      console.error("Error en cargar el Threshold", error)
+    }
   }
+
+  const saveCustomThreshold = async(value) => {
+    try {
+      await AsyncStorage.setItem("customThreshold", value.toString())
+      setCustomThreshold(value)
+
+      try{
+        await axios.post(`${API_URL}/device/settings`, {
+          command: `SET_THRESHOLD:${value}`,
+        })
+        Alert.alert("Exito", "Umbral actualizado en el dispositivo")
+      } catch (error) {
+        console.error("Error en el update del dispositovo Threshold:", error)
+        Alert.alert("Error", "No se pudo actualizar el umbral en el dispositivo")
+      }
+    } catch (error){
+      console.error("Error en el guardar el threshold", error)
+    }
+  }
+
+  const fetchDeviceData = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/device/status`)
+      const data = response.data
+
+      setDeviceData({
+        latitude: data.latitude, 
+        longitude: data.longitude, 
+        rssi: data.rssi, 
+        mode: data.mode, 
+        lastUpdate: new Date().toLocaleString(),
+      })
+
+      if(data.mode == "active" && deviceData.mode === "active"){
+        sendNotification("GPS activado: El GPS se ha activado.")
+
+        setTimeout(() => {
+          sendNotification("¡Tu perro ha salido de tu red WIFI!", "Siga a tu perro")
+        }, 5000)
+      }
+    } catch (error){
+      console.error("Error en obtener datos en el dispositivo", error)
+    }
+  }
+
+  const checkThresholds = () => {
+    const { rssi } = devideData
+
+    if(rssi <= customThreshold && rssi > fixedThreshold){
+      sendNotification("¡Tu perro ha salido del primer umbral!")
+    }
+
+    if(rssi <= fixedThreshold){
+      sendNotification("¡Tu perro ha salido del segundo umbral!")
+    }
+  }
+
+  const sendNotification = async (title, body) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title, 
+        body, 
+        sound: true, 
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      }, 
+      trigger: null,
+    })
+  }
+  //COMPONENTES DE LA PANTALLA DE INICIO
 }
