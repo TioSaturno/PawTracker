@@ -1,9 +1,7 @@
 import { useEffect, useState} from "react"
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Alert, Platform } from "react-native"
 //import MAPA 
-import { NavigationContainer } from "@react-navigation/native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { Home, Map, Settings, Bell } from "lucide-react-native"
 import * as Notifications from 'expo-notifications'
 import axios from "axios" 
 import AsyncStorage from "@react-native-async-storage/async-storage"
