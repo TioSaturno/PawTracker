@@ -1,23 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import WelcomeScreen from './screens/WelcomeScreen';
+import DogNameScreen from './screens/DogNameScreen';
+import WifiSetupScreen from './screens/WifiSetupScreen';
+import PerimeterSetupScreen from './screens/PerimeterSetupScreen';
+import CompletionScreen from './screens/CompletionScreen';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Image source = {{ uri: "https://static.wikia.nocookie.net/omegia/images/4/49/TungTungTungSahur.jpg/revision/latest?cb=20250331233111&path-prefix=es" }}
-        style = {{ width: 503, heigth: 758 }}
-      />
-      <StatusBar style="auto" />
-      <Text>TUNG TUNG TUNG SAHUR</Text>
-    </View>
-  );
-}
+  const [step, setStep] = useState(0);
+  const [dogName, setDogName] = useState('');
+  const [rssi, setRssi] = useState(null);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'yellow',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const screens = [
+    <WelcomeScreen onNext={() => setStep(1)} />,
+    <DogNameScreen onNext={() => setStep(2)} dogName={dogName} setDogName={setDogName} />,
+    <WifiSetupScreen onNext={() => setStep(3)} />,
+    <PerimeterSetupScreen onNext={() => setStep(4)} setRssi={setRssi} />,
+    <CompletionScreen dogName={dogName} rssi={rssi} />
+  ];
+
+  return <View style={{ flex: 1 }}>{screens[step]}</View>;
+}
