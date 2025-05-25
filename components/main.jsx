@@ -44,7 +44,7 @@ export function Main() {
       <Marker
         coordinate={DogLocation}
         title={"Tu perro"}
-        description={isConected ? "Conectado a Wifi" : "Usando GPS"}
+        //description={isConected ? "Conectado a Wifi" : "Usando GPS"}
         pinColor={"blue"}></Marker>
     </View>
   );
