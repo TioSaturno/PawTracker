@@ -8,6 +8,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { ThresholdSettings } from "./components/ThresholdSettings"
 import { DeviceStatus } from "./components/DeviceStatus"
 import { NotificationHistory } from "./components/NotificationHistory"
+import WelcomeScreen from './screens/WelcomeScreen';
+import DogNameScreen from './screens/DogNameScreen';
+import WifiSetupScreen from './screens/WifiSetupScreen';
+import PerimeterSetupScreen from './screens/PerimeterSetupScreen';
+import CompletionScreen from './screens/CompletionScreen';
 
 Notifications.setNotificacionesHandler({
   handleNotification: async () => ({
@@ -23,6 +28,20 @@ const Tab = createBottomTabNavigator()
 const API_URL = ""
 
 export default function App() {
+  const [step, setStep] = useState(0);
+  const [dogName, setDogName] = useState('');
+  const [rssi, setRssi] = useState(null);
+
+  const screens = [
+    <WelcomeScreen onNext={() => setStep(1)} />,
+    <DogNameScreen onNext={() => setStep(2)} dogName={dogName} setDogName={setDogName} />,
+    <WifiSetupScreen onNext={() => setStep(3)} />,
+    <PerimeterSetupScreen onNext={() => setStep(4)} setRssi={setRssi} />,
+    <CompletionScreen dogName={dogName} rssi={rssi} />
+  ];
+
+  return <View style={{ flex: 1 }}>{screens[step]}</View>;
+  
   const [expoPushToken, setExpoPushToken] = useState("")
   const [deviceData, setDeviceData] = useState({
     latitude: 0,
@@ -148,6 +167,52 @@ export default function App() {
       trigger: null,
     })
   }
+  const [gpsActivo, setGpsActivo] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [watcher, setWatcher] = useState(null);
+
+  // Activar GPS y actualizar ubicación en tiempo real
+  const activarGPS = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permiso para acceder a la ubicación fue denegado');
+      return;
+    }
+
+    const watchId = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 5000, // cada 5 segundos
+        distanceInterval: 5, // o cada 5 metros
+      },
+      (loc) => {
+        setLocation(loc); // Actualiza posición
+      }
+    );
+
+    setWatcher(watchId);
+  };
+
+  useEffect(() => {
+    if (gpsActivo) {
+      activarGPS();
+    }
+
+    return () => {
+      if (watcher) {
+        watcher.remove();
+      }
+    };
+  }, [gpsActivo]);
+
+  let locationText = 'Esperando activación de GPS...';
+  if (errorMsg) {
+    locationText = errorMsg;
+  } else if (location) {
+    locationText = `Latitud: ${location.coords.latitude}\nLongitud: ${location.coords.longitude}`;
+  }
+
     return ( 
     <SafeAreaProvider>
     <View style={styles.container}>
@@ -162,5 +227,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });

@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
         "jsEngine": "hermes"
-      }
+      },
+       "package": "com.anonymous.paw_tracker"
     },
     "web": {
       "favicon": "./assets/favicon.png"
