@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react"
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Alert, Platform, SafeAreaProvider } from "react-native"
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Alert, Platform, SafeAreaProvider, View, StatusBar } from "react-native"
 import { Main } from "./components/main" 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import * as Notifications from 'expo-notifications'
@@ -8,12 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { ThresholdSettings } from "./components/ThresholdSettings"
 import { DeviceStatus } from "./components/DeviceStatus"
 import { NotificationHistory } from "./components/NotificationHistory"
-import WelcomeScreen from './screens/WelcomeScreen';
-import DogNameScreen from './screens/DogNameScreen';
-import WifiSetupScreen from './screens/WifiSetupScreen';
-import PerimeterSetupScreen from './screens/PerimeterSetupScreen';
-import CompletionScreen from './screens/CompletionScreen';
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     notificacionAlerta: true, 
@@ -28,19 +22,6 @@ const Tab = createBottomTabNavigator()
 const API_URL = ""
 
 export default function App() {
-  const [step, setStep] = useState(0);
-  const [dogName, setDogName] = useState('');
-  const [rssi, setRssi] = useState(null);
-
-  const screens = [
-    <WelcomeScreen onNext={() => setStep(1)} />,
-    <DogNameScreen onNext={() => setStep(2)} dogName={dogName} setDogName={setDogName} />,
-    <WifiSetupScreen onNext={() => setStep(3)} />,
-    <PerimeterSetupScreen onNext={() => setStep(4)} setRssi={setRssi} />,
-    <CompletionScreen dogName={dogName} rssi={rssi} />
-  ];
-
-  return <View style={{ flex: 1 }}>{screens[step]}</View>;
   
   const [expoPushToken, setExpoPushToken] = useState("")
   const [deviceData, setDeviceData] = useState({
