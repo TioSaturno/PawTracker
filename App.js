@@ -14,7 +14,7 @@ import WifiSetupScreen from './screens/WifiSetupScreen';
 import PerimeterSetupScreen from './screens/PerimeterSetupScreen';
 import CompletionScreen from './screens/CompletionScreen';
 
-Notifications.setNotificacionesHandler({
+Notifications.setNotificationHandler({
   handleNotification: async () => ({
     notificacionAlerta: true, 
     notificacionSonido: true, 
